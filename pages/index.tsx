@@ -576,7 +576,9 @@ export default function Home() {
                       {meName === data.SenderName
                         ? onlineUser.filter((u) => u.id === data.ReceiverID)[0]
                             .username
-                        : (data.roomName || false)? data.roomName: data.SenderName}
+                        : data.roomName || false
+                        ? data.roomName
+                        : data.SenderName}
                     </div>
                   )}
                   {!isDirect && (
@@ -589,32 +591,31 @@ export default function Home() {
                     {data.member.length}
                   </div>
                   <div className="flex mt-5 justify-center items-end">
-                    {
-                      (meName ===
-                        onlineUser.filter((u) => u.id === data.ReceiverID)[0]?
-                          .username ||
-                        meName === data.SenderName) && (
-                        <button
-                          onClick={() => {
-                            if (socket) {
-                              socket.emit(
-                                SocketEvents.JoinChatroom,
-                                data.chatroomid,
-                                !!isDirect
-                              );
-                              setCurrentchatroom(data.chatroomid);
-                              setCurrentRoomname(data.roomName);
-                              setMode(2);
-                            } else {
-                              alert("create client first");
-                              setMode(0);
-                            }
-                          }}
-                          className=" bg-sky-500 px-4 py-2 rounded-xl"
-                        >
-                          Accept
-                        </button>
-                      )}
+                    {(meName ===
+                      onlineUser.filter((u) => u.id === data.ReceiverID)[0]
+                        ?.username ||
+                      meName === data.SenderName) && (
+                      <button
+                        onClick={() => {
+                          if (socket) {
+                            socket.emit(
+                              SocketEvents.JoinChatroom,
+                              data.chatroomid,
+                              !!isDirect
+                            );
+                            setCurrentchatroom(data.chatroomid);
+                            setCurrentRoomname(data.roomName);
+                            setMode(2);
+                          } else {
+                            alert("create client first");
+                            setMode(0);
+                          }
+                        }}
+                        className=" bg-sky-500 px-4 py-2 rounded-xl"
+                      >
+                        Accept
+                      </button>
+                    )}
                     {!data.isDirect && (
                       <button
                         onClick={() => {
@@ -622,11 +623,15 @@ export default function Home() {
                             socket.emit(
                               SocketEvents.JoinChatroom,
                               data.chatroomid,
-                              !!isAbdulModal
+                              data.isAbdul
                             );
                             setCurrentchatroom(data.chatroomid);
                             setCurrentRoomname(data.roomName);
-                            setAbdulChatRoom(data.isAbdul);
+                            setAbdul((prev) => ({
+                              ...prev,
+                              isChatRoom: data.isAbdul,
+                            }));
+                            setCurrentCa(data.category);
                             setMode(2);
                           } else {
                             alert("create client first");
